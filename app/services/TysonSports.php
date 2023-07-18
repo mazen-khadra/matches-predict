@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use think\facade\Log;
 use Illuminate\Support\Facades\Http;
 
 class TysonSports {
