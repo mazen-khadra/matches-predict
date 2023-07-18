@@ -72,7 +72,7 @@ class TysonSports {
             $this->getAuthParams(),
             $this->getFiltersParams($daysOffset, $sportId, $leagueId)
         )
-      );
+      )->json();
 
       return $res;
     } catch(\Throwable $e) { throw $e; }
