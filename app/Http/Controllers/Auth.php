@@ -37,7 +37,7 @@ class Auth extends Controller
             return response($user);
         }
 
-        return response(null, 401);
+        return response(["error" => "Invalid Credentials"], 401);
     }
 
     public function getLoggedInUser() {
