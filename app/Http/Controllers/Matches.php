@@ -14,7 +14,7 @@ class Matches extends Controller
       $sport = $sport ?? $req->query('sport');
       $leagueId = $leagueId ?? $req->query('leagueId');
       $daysOffset = $daysOffset ?? $req->query('daysOffset');
-      $useAltSvc = $useAltSvc ?? $req->query('useAltSvc');
+      $useAltSvc = $useAltSvc ?? $req->query('useAltSvc') ?? true;
       $sportId = SportAPI::$SPORTS_IDS[$sport];
 
       $data = (new SportAPI())->getMatches (
