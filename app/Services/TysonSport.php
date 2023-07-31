@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
-class TysonSports {
+class TysonSport {
 
   static $SPORTS_IDS = [
     "football" => 1,
