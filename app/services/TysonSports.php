@@ -67,6 +67,7 @@ class TysonSports {
   }
 
     function getMatches($sportId = null, $leagueId = null, $daysOffset = 0, $useAltSvc = false) : array {
+        dd("TEST_1");
         try {
             if(true) {
                 $queryParams = ["sportId" => $sportId, "hotLeague" => $leagueId, "daysOffset" => $daysOffset];
