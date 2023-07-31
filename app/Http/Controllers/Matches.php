@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\TysonSports as SportAPI;
+use App\Services\TysonSport as SportAPI;
 
 class Matches extends Controller
 {
