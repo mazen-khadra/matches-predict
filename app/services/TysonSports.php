@@ -26,6 +26,7 @@ class TysonSports {
   ];
 
   private $uri = '';
+  private $altSvcUri = '';
   private $user = '';
   private $code = '';
   private $secretKey = '';
@@ -35,6 +36,7 @@ class TysonSports {
 
   function __construct() {
     $this->uri = 'http://datafeed2.tysondata.com:8080/';
+    $this->altSvcUri = 'http://107.151.150.20:9092/v1/';
     $this->code = 'bf97878e990b3b99b2db8f1a6a77ecf7';
     $this->user = 'mtty';
     $this->secretKey = 'b94b91496b2bb4c6be8b655c22b53fdb';
@@ -64,21 +66,30 @@ class TysonSports {
     return $res;
   }
 
-  function getMatches($sportId = null, $leagueId = null, $daysOffset = 0) : array {
-    try {
-      $res = Http::withoutVerifying()->withHeaders($this->headers)->get (
-        $this->uri . 'datashare/matchList',
-        array_merge (
-            $this->getAuthParams(),
-            $this->getFiltersParams($daysOffset, $sportId, $leagueId)
-        )
-      )->json();
+    function getMatches($sportId = null, $leagueId = null, $daysOffset = 0, $useAltSvc = false) : array {
+        try {
+            if(!empty($useAltSvc)) {
+                $queryParams = ["sportId" => $sportId, "hotLeague" => $leagueId, "daysOffset" => $daysOffset];
+                $queryParams = array_filter($queryParams, function($param) {return $param != null;});
+                $res = Http::withoutVerifying()->withHeaders($this->headers)->get (
+                    $this->altSvcUri . 'live-matches',
+                    $queryParams
+                )->json()["data"];
+            } else {
+                $res = Http::withoutVerifying()->withHeaders($this->headers)->get(
+                    $this->uri . 'datashare/matchList',
+                    array_merge (
+                        $this->getAuthParams(),
+                        $this->getFiltersParams($daysOffset, $sportId, $leagueId)
+                    )
+                )->json();
+            }
 
-      return $res;
-    } catch(\Throwable $e) { throw $e; }
+            return $res;
+        } catch(\Throwable $e) { throw $e; }
 
-    return [];
-  }
+        return [];
+    }
 
   function getLeagues($sportId, $asIdsMap = false) : array {
     try {
