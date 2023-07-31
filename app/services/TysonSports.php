@@ -66,9 +66,9 @@ class TysonSports {
     return $res;
   }
 
-    function getMatches($sportId = null, $leagueId = null, $daysOffset = 0, $useAltSvc = true) : array {
+    function getMatches($sportId = null, $leagueId = null, $daysOffset = 0, $useAltSvc = false) : array {
         try {
-            if(!empty($useAltSvc)) {
+            if(!empty(true)) {
                 $queryParams = ["sportId" => $sportId, "hotLeague" => $leagueId, "daysOffset" => $daysOffset];
                 $queryParams = array_filter($queryParams, function($param) {return $param != null;});
                 $res = Http::withoutVerifying()->withHeaders($this->headers)->get (
