@@ -32,6 +32,6 @@ Route::prefix('predict')->middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('match')->group(function() {
-    Route::get('/list', [MatchController::class, "index"]);
+    //Route::get('/list', [MatchController::class, "index"]);
     Route::get('/{matchId}/details', [MatchController::class, "details"]);
 });
