@@ -35,6 +35,7 @@ class TysonSports {
   private $ANIMATE_BASE_URL = 'http://lmt.tysondata.com/sc/index.jsp';
 
   function __construct() {
+    dd("TEST_2");
     $this->uri = 'http://datafeed2.tysondata.com:8080/';
     $this->altSvcUri = 'http://107.151.150.20:9092/v1/';
     $this->code = 'bf97878e990b3b99b2db8f1a6a77ecf7';
