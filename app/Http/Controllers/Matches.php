@@ -17,9 +17,10 @@ class Matches extends Controller
       $useAltSvc = $useAltSvc ?? $req->query('useAltSvc');
       $sportId = SportAPI::$SPORTS_IDS[$sport];
 
-        $data = (new SportAPI())->getMatches (
-          $sportId, $leagueId, $daysOffset, $useAltSvc
-        );
+      dd('TEST_!');
+      $data = (new SportAPI())->getMatches (
+        $sportId, $leagueId, $daysOffset, $useAltSvc
+      );
       return $data;
     }
 
