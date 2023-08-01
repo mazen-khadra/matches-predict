@@ -31,6 +31,8 @@ class MatchPredict extends Controller
          "match_id" => $data["match_id"],
          "user_id" => $data["user_id"]
         ], $data);
+
+        return ["message" => "success"];
     }
 
     public function getMatchStats($matchId) {
