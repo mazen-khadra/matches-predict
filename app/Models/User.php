@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Img as ImgModel;
+use App\Http\Controllers\MatchPredict as MatchPredictController;
 
 class User extends Authenticatable
 {
@@ -46,10 +47,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected $appends = ['img_url'];
+    protected $appends = ['img_url', 'pred_stats'];
 
     public function getImgUrlAttribute() {
         return ImgModel::getImgUrlById($this->attributes['img_id']);
+    }
+
+    public function getPredStatsAttribute() {
+        return (new MatchPredictController())->getUserStats($this->id);
     }
 
 }

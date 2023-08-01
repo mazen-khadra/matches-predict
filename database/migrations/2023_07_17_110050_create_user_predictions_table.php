@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('draw')->default(false);
             $table->double('winner_score')->nullable();
             $table->double('loser_score')->nullable();
+            $table->boolean('is_success')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')
