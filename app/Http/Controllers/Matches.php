@@ -25,7 +25,17 @@ class Matches extends Controller
       $matchPredCont = new MatchPredictController();
 
       foreach($data as &$match) {
-          $match['pred_stats'] = $matchPredCont->getMatchStats($match['id']);
+          $predStats = $matchPredCont->getMatchStats($match['id']);
+          $homeTeamCnt = 0;
+          $awayTeamCnt = 0;
+          foreach ($predStats as $stat) {
+              if($stat["team_id"] == $match["home_team_id"])
+                  $homeTeamCnt = $stat["cnt"];
+              elseif($stat["team_id"] == $match["away_team_id"])
+                  $awayTeamCnt = $stat["cnt"];
+          }
+
+          $match["pred_stats"] = ["home_team_cnt" => $homeTeamCnt, "away_team_cnt" => $awayTeamCnt];
       }
 
       return $data;
