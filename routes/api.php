@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth as AuthController;
 use App\Http\Controllers\MatchPredict as MatchPredictController;
 use App\Http\Controllers\Matches as MatchController;
-
+use App\Http\Controllers\User as UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,4 +34,8 @@ Route::prefix('predict')->middleware('auth:sanctum')->group(function () {
 Route::prefix('match')->middleware('auth:sanctum')->group(function() {
     Route::get('/list', [MatchController::class, "index"]);
     Route::get('/{matchId}/details', [MatchController::class, "details"]);
+});
+
+Route::prefix('users')->middleware('auth:sanctum')->group(function() {
+    Route::get('/list', [UserController::class, "index"]);
 });
