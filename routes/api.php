@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth as AuthController;
 use App\Http\Controllers\MatchPredict as MatchPredictController;
 use App\Http\Controllers\Matches as MatchController;
 use App\Http\Controllers\User as UserController;
+use App\Http\Controllers\Img as ImgController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,7 +22,7 @@ use App\Http\Controllers\User as UserController;
 Route::prefix('auth')->group(function () {
     Route::post('signup', [AuthController::class, "signUp"]);
     Route::post('login', [AuthController::class, "login"]);
-    Route::post('logout', [AuthController::class, "logOut"]);
+    Route::post('logout', [AuthController::class, "logOut"])->middleware('auth:sanctum');
     Route::get('user', [AuthController::class, "getLoggedInUser"])->middleware('auth:sanctum');
 });
 
@@ -38,4 +40,9 @@ Route::prefix('match')->middleware('auth:sanctum')->group(function() {
 
 Route::prefix('users')->middleware('auth:sanctum')->group(function() {
     Route::get('/list', [UserController::class, "index"]);
+    Route::post('/profile', [UserController::class, 'updateProfile']);
+});
+
+Route::prefix('resource')->group(function() {
+    Route::post('/img', [ImgController::class, 'uploadImg']);
 });
