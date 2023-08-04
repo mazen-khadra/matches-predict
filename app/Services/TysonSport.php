@@ -36,7 +36,7 @@ class TysonSport {
 
   function __construct() {
     $this->uri = 'http://datafeed2.tysondata.com:8080/';
-    $this->altSvcUri = 'http://107.151.150.20:9092/v1/';
+    $this->altSvcUri = 'https://zeyuapi.com/v1/';
     $this->code = 'bf97878e990b3b99b2db8f1a6a77ecf7';
     $this->user = 'mtty';
     $this->secretKey = 'b94b91496b2bb4c6be8b655c22b53fdb';
