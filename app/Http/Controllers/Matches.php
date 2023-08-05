@@ -60,7 +60,8 @@ class Matches extends Controller
               $finalPredStats['current_user'] = [
                   "for_home" => $pred["winner_team_id"] == $data["home_team_id"],
                   "for_away" => $pred["winner_team_id"] == $data["away_team_id"],
-                  "draw" => boolval($pred["draw"])
+                  "draw" => boolval($pred["draw"]),
+                  "is_success" => boolval($pred["is_success"])
               ];
           else if($pred["draw"])
               $finalPredStats["draws"][] = $userInfo;
