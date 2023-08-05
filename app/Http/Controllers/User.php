@@ -27,6 +27,6 @@ class User extends Controller
         }
 
         UserModel::whereKey($userId)->update($data);
-        return UserModel::whereKey($userId)->get();
+        return UserModel::whereKey($userId)->get()->first();
     }
 }
