@@ -54,7 +54,7 @@ class Matches extends Controller
           $userInfo = [
               "name" => $pred->user["name"],
               "img_url" => $pred->user["img_url"],
-              "pred_stats" => $pred->user["pred_stats"]
+              "preds" => $pred->user["pred_stats"]
           ];
           if($pred["user_id"] == $userId)
               $finalPredStats['current_user'] = [
