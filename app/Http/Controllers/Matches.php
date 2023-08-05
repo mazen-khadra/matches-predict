@@ -51,12 +51,16 @@ class Matches extends Controller
 
 
       foreach ($predStats as $pred) {
-          $userInfo = ["name" => $pred->user["name"], "pred_stats" => $pred->user["pred_stats"]];
+          $userInfo = [
+              "name" => $pred->user["name"],
+              "img_url" => $pred->user["img_url"],
+              "pred_stats" => $pred->user["pred_stats"]
+          ];
           if($pred["user_id"] == $userId)
               $finalPredStats['current_user'] = [
                   "for_home" => $pred["winner_team_id"] == $data["home_team_id"],
                   "for_away" => $pred["winner_team_id"] == $data["away_team_id"],
-                  "draw" => $pred["draw"]
+                  "draw" => boolval($pred["draw"])
               ];
           else if($pred["draw"])
               $finalPredStats["draws"][] = $userInfo;
