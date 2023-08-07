@@ -71,7 +71,7 @@ class TysonSport {
             if(!empty($useAltSvc)) {
                 $queryParams = ["sportId" => $sportId, "hotLeague" => $leagueId, "daysOffset" => $daysOffset];
                 $queryParams = array_filter($queryParams, function($param) {return $param != null;});
-                $res = Http::withoutVerifying()->withHeaders($this->headers)->get (
+                $res = Http::withoutVerifying()->timeout(60 )->withHeaders($this->headers)->get (
                     $this->altSvcUri . 'live-matches',
                     $queryParams
                 )->json()["data"];
@@ -168,7 +168,7 @@ class TysonSport {
           if(empty($matchId))
               return null;
 
-          $res = Http::withoutVerifying()->withHeaders($this->headers)->get (
+          $res = Http::withoutVerifying()->timeout(60)->withHeaders($this->headers)->get (
               $this->uri . "/datashare/matchInfo",
               array_merge($this->getAuthParams(), ["id" => $matchId])
           )->json();
