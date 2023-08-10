@@ -15,13 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('match_id');
-            $table->string('winner_team_id')->nullable();
+            $table->enum('winner_team', [0, "home_team", "away_team"]);
             $table->boolean('draw')->default(false);
             $table->double('winner_score')->nullable();
             $table->double('loser_score')->nullable();
             $table->boolean('is_success')->nullable();
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('cascade')->onDelete('cascade');
         });
