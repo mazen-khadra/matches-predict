@@ -66,7 +66,6 @@ class MatchPredict extends Controller
 
         $matchesCach = [];
         foreach ($unVerifiedPredictions as &$pred) {
-            $isSuccess = false;
             $matchId = $pred['match_id'];
 
             $match = $matchesCach[$matchId] ?? (new SportAPI())->getMatchDetails($matchId);
@@ -75,12 +74,10 @@ class MatchPredict extends Controller
                 $matchesCach[$matchId] = $match;
             }
 
-            // if ($match['data']['match_state'] == "finished") {
-            //     continue;
-            // }
-            // return $match;
-
             if (empty($pred['winner_team'])) {
+                /**
+                 * begin outer if
+                 */
                 if ($match['data']['home_score'] > $match['data']['away_score'] || $match['data']['home_score'] < $match['data']['away_score']) {
                     if ($match['data']['home_score'] > $match['data']['away_score']) {
                         UserPredictionModel::whereKey($pred['id'])->update([
@@ -90,8 +87,8 @@ class MatchPredict extends Controller
                             'loser_score' => $match['data']['away_score'],
                             'is_success' => false,
                         ]);
-                        die;
-                    } else {
+
+                    } else if ($match['data']['home_score'] < $match['data']['away_score']) {
                         UserPredictionModel::whereKey($pred['id'])->update([
                             'draw' => 0,
                             'winner_team' => "away_team",
@@ -99,17 +96,195 @@ class MatchPredict extends Controller
                             'loser_score' => $match['data']['home_score'],
                             'is_success' => false,
                         ]);
-                        die;
+
                     }
+                } else {
+
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 1,
+                        'winner_team' => "0",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => true,
+                    ]);
+
                 }
-            } else {
-                UserPredictionModel::whereKey($pred['id'])->update([
-                    'draw' => 1,
-                    'winner_team' => "0",
-                    'winner_score' => $match['data']['home_score'],
-                    'loser_score' => $match['data']['away_score'],
-                    'is_success' => false,
-                ]);
+                /**
+                 * end outer if
+                 */
+            } else if ($pred['winner_team'] == "home_team") {
+
+                if ($match['data']['home_score'] > $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "home_team",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => true,
+                    ]);
+
+                } else if ($match['data']['home_score'] < $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "away_team",
+                        'winner_score' => $match['data']['away_score'],
+                        'loser_score' => $match['data']['home_score'],
+                        'is_success' => false,
+                    ]);
+
+                } else {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 1,
+                        'winner_team' => "0",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => false,
+                    ]);
+                }
+
+            } else if ($pred['winner_team'] == "away_team") {
+
+                if ($match['data']['home_score'] > $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "home_team",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => false,
+                    ]);
+
+                } else if ($match['data']['home_score'] < $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "away_team",
+                        'winner_score' => $match['data']['away_score'],
+                        'loser_score' => $match['data']['home_score'],
+                        'is_success' => true,
+                    ]);
+                } else {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 1,
+                        'winner_team' => "0",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => false,
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function verifyPredictionsByDev()
+    {
+
+        $unVerifiedPredictions = UserPredictionModel::whereNull('is_success')->select()->get();
+
+        $matchesCach = [];
+        foreach ($unVerifiedPredictions as &$pred) {
+            $matchId = $pred['match_id'];
+
+            $match = $matchesCach[$matchId] ?? (new SportAPI())->getMatchDetailsByDev($matchId);
+
+            if (!empty($match)) {
+                $matchesCach[$matchId] = $match;
+            }
+
+            if (empty($pred['winner_team'])) {
+                /**
+                 * begin outer if
+                 */
+                if ($match['data']['home_score'] > $match['data']['away_score'] || $match['data']['home_score'] < $match['data']['away_score']) {
+                    if ($match['data']['home_score'] > $match['data']['away_score']) {
+                        UserPredictionModel::whereKey($pred['id'])->update([
+                            'draw' => 0,
+                            'winner_team' => "home_team",
+                            'winner_score' => $match['data']['home_score'],
+                            'loser_score' => $match['data']['away_score'],
+                            'is_success' => false,
+                        ]);
+
+                    } else if ($match['data']['home_score'] < $match['data']['away_score']) {
+                        UserPredictionModel::whereKey($pred['id'])->update([
+                            'draw' => 0,
+                            'winner_team' => "away_team",
+                            'winner_score' => $match['data']['away_score'],
+                            'loser_score' => $match['data']['home_score'],
+                            'is_success' => false,
+                        ]);
+
+                    }
+                } else {
+
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 1,
+                        'winner_team' => "0",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => true,
+                    ]);
+
+                }
+                /**
+                 * end outer if
+                 */
+            } else if ($pred['winner_team'] == "home_team") {
+
+                if ($match['data']['home_score'] > $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "home_team",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => true,
+                    ]);
+
+                } else if ($match['data']['home_score'] < $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "away_team",
+                        'winner_score' => $match['data']['away_score'],
+                        'loser_score' => $match['data']['home_score'],
+                        'is_success' => false,
+                    ]);
+
+                } else {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 1,
+                        'winner_team' => "0",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => false,
+                    ]);
+                }
+
+            } else if ($pred['winner_team'] == "away_team") {
+
+                if ($match['data']['home_score'] > $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "home_team",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => false,
+                    ]);
+
+                } else if ($match['data']['home_score'] < $match['data']['away_score']) {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 0,
+                        'winner_team' => "away_team",
+                        'winner_score' => $match['data']['away_score'],
+                        'loser_score' => $match['data']['home_score'],
+                        'is_success' => true,
+                    ]);
+                } else {
+                    UserPredictionModel::whereKey($pred['id'])->update([
+                        'draw' => 1,
+                        'winner_team' => "0",
+                        'winner_score' => $match['data']['home_score'],
+                        'loser_score' => $match['data']['away_score'],
+                        'is_success' => false,
+                    ]);
+                }
             }
         }
     }

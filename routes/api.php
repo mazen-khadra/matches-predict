@@ -29,6 +29,7 @@ Route::prefix('predict')->middleware('auth:sanctum')->group(function () {
     Route::get('/list', [MatchPredictController::class, "index"]);
     Route::post('/', [MatchPredictController::class, "add"]);
     Route::get('/stats/match/{matchId}', [MatchPredictController::class, "getMatchStats"]);
+  
 });
 
 Route::prefix('match')->middleware('auth:sanctum')->group(function () {
@@ -47,8 +48,12 @@ Route::prefix('resource')->group(function () {
 
 Route::get('/list', [UserController::class, "index"]);
 
+
+
+// wrote by @Amjad
+Route::get('/verify-predication', [MatchPredictController::class, 'verifyPredictionsByDev']);
 Route::get('/pull-and-save-api-data', [App\Services\TysonSport::class, 'getPreviousAndNextMatches']);
-Route::get('/verify-predication', [MatchPredictController::class, 'verifyPredictions']);
+
 
 
 
