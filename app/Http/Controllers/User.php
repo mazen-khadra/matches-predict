@@ -9,8 +9,8 @@ Use App\Models\Img as ImgModel;
 
 class User extends Controller
 {
-    public function index (Request $req) {
-        $userId = $req->user()->id;
+    public function index (Request $request) {
+        $userId = $request->user()->id;
 
         return UserModel::whereNot('id', $userId)->get();
     }

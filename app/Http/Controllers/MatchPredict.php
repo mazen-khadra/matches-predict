@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserPredictInfo;
 use App\Models\UserPrediction as UserPredictionModel;
 use App\Services\TysonSport as SportAPI;
 use Illuminate\Http\Request;
 
 class MatchPredict extends Controller
 {
+    public function getUserStats($userId)
+    {
+        $allCnt = UserPredictionModel::where('user_id', $userId)->count();
+        $successCnt = UserPredictionModel::where('user_id', $userId)
+            ->where('is_success', true)->count();
+        $coins = $successCnt * 10;
+
+        return ["allCnt" => $allCnt, "successCnt" => $successCnt, "coins" => $coins];
+    }
 
     public function add(Request $req)
     {
@@ -16,6 +26,11 @@ class MatchPredict extends Controller
         $data["user_id"] = $req->user()->id;
 
         UserPredictionModel::updateOrCreate([
+            "match_id" => $data["match_id"],
+            "user_id" => $data["user_id"],
+        ], $data);
+
+        UserPredictInfo::updateOrCreate([
             "match_id" => $data["match_id"],
             "user_id" => $data["user_id"],
         ], $data);
@@ -183,11 +198,11 @@ class MatchPredict extends Controller
         $winStats = [];
         foreach ($response['data'] as &$data) {
             foreach ($data['matches'] as &$matchId) {
-                if (UserPredictionModel::where('match_id', $matchId['slug'])->exists()) {
-                    $allCnt = UserPredictionModel::where('match_id', $matchId['slug'])->count();
-                    $winStats['home_team_cnt'] = UserPredictionModel::where(['match_id' => $matchId['slug'], 'winner_team' => 'home_team'])->get()->count();
-                    $winStats['away_team_cnt'] = UserPredictionModel::where(['match_id' => $matchId['slug'], 'winner_team' => 'away_team'])->get()->count();
-                    $drawCnt = UserPredictionModel::where('match_id', $matchId['slug'])->where(['match_id' => $matchId['slug'], 'draw' => true])->count();
+                if (UserPredictInfo::where('match_id', $matchId['slug'])->exists()) {
+                    $allCnt = UserPredictInfo::where('match_id', $matchId['slug'])->count();
+                    $winStats['home_team_cnt'] = UserPredictInfo::where(['match_id' => $matchId['slug'], 'winner_team' => 'home_team'])->get()->count();
+                    $winStats['away_team_cnt'] = UserPredictInfo::where(['match_id' => $matchId['slug'], 'winner_team' => 'away_team'])->get()->count();
+                    $drawCnt = UserPredictInfo::where('match_id', $matchId['slug'])->where(['match_id' => $matchId['slug'], 'draw' => true])->count();
                     $matchId['pred_stats'] = ["allCnt" => $allCnt, "winStats" => $winStats, "drawCnt" => $drawCnt];
                 }
             }

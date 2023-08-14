@@ -37,7 +37,7 @@ Route::prefix('match')->middleware('auth:sanctum')->group(function () {
 });
 
 Route::prefix('users')->middleware('auth:sanctum')->group(function () {
-    Route::get('/list', [UserController::class, "index"]);
+    // Route::get('/list', [UserController::class, "index"]);
     Route::post('/profile', [UserController::class, 'updateProfile']);
 });
 
@@ -45,10 +45,9 @@ Route::prefix('resource')->group(function () {
     Route::post('/img', [ImgController::class, 'uploadImg']);
 });
 
-Route::get('/list', [UserController::class, "index"]);
+Route::get('users/list', [UserController::class, "index"]);
 
 // wrote by @Dev
 Route::get('/match/list', [MatchPredictController::class, 'getMatchesByDev']);
 Route::get('/verify-predication', [MatchPredictController::class, 'verifyPredictionsByDev']);
-
 Route::get('/pull-and-save-api-data', [App\Services\TysonSport::class, 'getPreviousAndNextMatches']);
