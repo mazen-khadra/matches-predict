@@ -13,10 +13,9 @@ class MatchPredict extends Controller
     {
         $allCnt = UserPredictionModel::where('user_id', $userId)->count();
         $successCnt = UserPredictionModel::where('user_id', $userId)
-            ->where('is_success', true)->count();
-        $coins = $successCnt * 10;
+            ->where('is_success', true)->count() * 10;
 
-        return ["allCnt" => $allCnt, "successCnt" => $successCnt, "coins" => $coins];
+        return ["allCnt" => $allCnt, "successCnt" => $successCnt, "coins" => $successCnt];
     }
 
     public function add(Request $req)
@@ -38,33 +37,6 @@ class MatchPredict extends Controller
         return ["message" => "success"];
     }
 
-    public function verifyPredictions()
-    {
-        $unVerifiedPredictions = UserPredictionModel::whereNull('is_success')->select()->get();
-        $matchesCach = [];
-        foreach ($unVerifiedPredictions as $pred) {
-            $isSuccess = false;
-            $matchId = $pred['match_id'];
-            $match = $matchesCach[$matchId] ?? (new SportAPI())->getMatchDetailsByDev($matchId);
-            if (!empty($match)) {
-                $matchesCach[$matchId] = $match;
-            }
-
-            if ($match['status'] != 3 && $match['status_code'] != 100) {
-                continue;
-            }
-
-            if ($match['winner'] == "1" && $pred['winner_team_id'] == $match['home_team_id']) {
-                $isSuccess = true;
-            } else if ($match['winner'] == "2" && $pred['winner_team_id'] == $match['away_team_id']) {
-                $isSuccess = true;
-            } else if ($match['winner'] == "3" && $pred['draw']) {
-                $isSuccess = true;
-            }
-
-            UserPredictionModel::whereKey($pred['id'])->update(['is_success' => $isSuccess]);
-        }
-    }
     public function verifyPredictionsByDev()
     {
 
@@ -185,29 +157,6 @@ class MatchPredict extends Controller
 
         }
     }
-    public function getMatchesByDev(Request $request)
-    {
-        $sportType = $request->query('sportType');
-        $lang = $request->query('lang');
-        $timeZone = $request->query('timezone');
-        $date = $request->query('date');
 
-        $abcd = new SportAPI();
-        $response = $abcd->getMatchListByDev($sportType, $lang, $timeZone, $date);
-
-        $winStats = [];
-        foreach ($response['data'] as &$data) {
-            foreach ($data['matches'] as &$matchId) {
-                if (UserPredictInfo::where('match_id', $matchId['slug'])->exists()) {
-                    $allCnt = UserPredictInfo::where('match_id', $matchId['slug'])->count();
-                    $winStats['home_team_cnt'] = UserPredictInfo::where(['match_id' => $matchId['slug'], 'winner_team' => 'home_team'])->get()->count();
-                    $winStats['away_team_cnt'] = UserPredictInfo::where(['match_id' => $matchId['slug'], 'winner_team' => 'away_team'])->get()->count();
-                    $drawCnt = UserPredictInfo::where('match_id', $matchId['slug'])->where(['match_id' => $matchId['slug'], 'draw' => true])->count();
-                    $matchId['pred_stats'] = ["allCnt" => $allCnt, "winStats" => $winStats, "drawCnt" => $drawCnt];
-                }
-            }
-            return $response['data'];
-        }
-
-    }
+   
 }

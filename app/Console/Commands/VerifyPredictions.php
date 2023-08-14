@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Http\Controllers\MatchPredict as MatchPredictController;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 class VerifyPredictions extends Command
@@ -28,7 +28,7 @@ class VerifyPredictions extends Command
     public function handle()
     {
         Log::info("Start Verifying Predictions");
-        (new MatchPredictController())->verifyPredictions();
+        (new MatchPredictController())->verifyPredictionsByDev();
         Log::info("Finish Verifying Predictions");
     }
 }
