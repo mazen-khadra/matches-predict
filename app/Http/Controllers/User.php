@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Img as ImgController;
 use App\Models\Img as ImgModel;
 use App\Models\User as UserModel;
-use App\Models\UserPrediction as UserPredictionModel;
 use Illuminate\Http\Request;
 
 class User extends Controller
@@ -14,10 +13,7 @@ class User extends Controller
     {
         $userId = $req->user()->id;
 
-    
-
         return UserModel::whereNot('id', $userId)->get();
-
     }
 
     public function updateProfile(Request $req)

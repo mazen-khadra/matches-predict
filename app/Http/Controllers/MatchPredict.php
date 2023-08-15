@@ -13,9 +13,10 @@ class MatchPredict extends Controller
     {
         $allCnt = UserPredictionModel::where('user_id', $userId)->count();
         $successCnt = UserPredictionModel::where('user_id', $userId)
-            ->where('is_success', true)->count() * 10;
+            ->where('is_success', true)->count();
+        $coins = $successCnt * 10;
 
-        return ["allCnt" => $allCnt, "successCnt" => $successCnt, "coins" => $successCnt];
+        return ["allCnt" => $allCnt, "successCnt" => $successCnt, "coins" => $coins];
     }
 
     public function add(Request $req)
@@ -158,5 +159,4 @@ class MatchPredict extends Controller
         }
     }
 
-   
 }
