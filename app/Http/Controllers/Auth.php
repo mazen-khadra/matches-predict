@@ -12,14 +12,16 @@ class Auth extends Controller
     public function signUp(Request $req)
     {
         $data = $req->validate([
-            "name" => 'bail|required|alpha',
+            "name" => 'bail|required',
             "email" => 'bail|required|email|:users',
             "password" => 'required',
+            "remember_token" => 'required',
         ]);
 
         if (!empty($req->img_url)) {
             $data["img_id"] = ImgModel::getImgIdByUrl($req->img_url);
         }
+
         if (UserModel::where('email', '=', $req->email)->count() == 0) {
             UserModel::create($data);
             return $this->logIn($req);
